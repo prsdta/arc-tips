@@ -1,0 +1,3 @@
+#+TITLE: Want to contribute
+
+If you know some other tips you'd want to share, on some area I haven't really covered please make a PR.
