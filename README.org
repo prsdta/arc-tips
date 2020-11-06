@@ -1,0 +1,117 @@
+#+TITLE: Tips & Tricks for Arc Fusion platform
+
+Dump of tips and undocumented features I found while working.
+
+* Content sources
+** Return an object
+Fusion will add properties, like a hash—most likely for caching—to the results
+of your content source—so the results of either your source, =resolve= or
+=fetch=, or your =transform=. Which means you’ll have errors if you return any
+kind of primitive, like a ~null~.
+
+** Throw an error on empty data
+Consider doing this and throwing a 404, since it makes it easier to deal with
+the *resolvers*.
+
+** Add meta to your returned data for PB
+:PROPERTIES:
+:ID:       71634bc1-af99-4d7e-b9e0-55d8c872f69c
+:END:
+If you add data to the object returned by your content source, it will be more
+easily available for interpolation in your *PageBuilder fields* or resolver’s
+*content mapping*. More likely to be a useful tips when returning a list of
+items.
+
+
+e.g.: When set via the *global content source*, your property ~xxx~ is available
+in a PageBuilder field as ~{{content.xxx}}~, or in a resolver content mapping as
+simply ~xxx~.
+
+** Configuration
+The JSON format configuration in the docs is actually working fine in =.js=
+files as well, like the =params= format—more to follow—or the url mapping with
+the =pattern= property.
+
+*** Params type
+When setting a type to the parameters, either like this:
+#+begin_src js
+const params = { fieldName: "text", };
+#+end_src
+or like that:
+#+begin_src js
+const params = [{
+  name: "fieldName",
+  displayName: "Name shown in PB",
+  type: "text",
+}];
+#+end_src
+The type data here will only be used to configure the input in PB, but all
+parameters will be passed to the source as *strings*, that you may need to
+parse.
+
+* PageBuilder Editor
+** Interpolate data in fields
+As noted in [[id:71634bc1-af99-4d7e-b9e0-55d8c872f69c][another entry]], you can interpolate values from the global content in
+fields, using double curly brackets.
+
+The data available for interpolation should correspond to this:
+#+BEGIN_SRC typescript
+type GlobalContent = object;
+interface Content {
+  arcSite: string;
+  contextPath: string;
+  /** The two following keys have the same data */
+  content: GlobalContent;
+  globalContent: GlobalContent;
+
+  globalContentConfig: object;
+  isAdmin: boolean;
+  layout: string;
+  outputType: string;
+  requestUri: string;
+  siteProperties: object;
+  template: string;
+}
+#+END_SRC
+
+* Deployment
+** Environment by instance
+The environment variables can be overridden by files under the =/environment=
+folder for each environment but the naming of the files is not explicitly
+documented.
+
+The filename should be ={env}-{instance name}= or, more easily, should
+correspond to the value of =Fusion.environment.ENVIRONMENT= (global variable
+accessible from the console on any page of your site).
+
+* Fusion features
+** Fusion context
+=useFusionContext= just gets you an object merging the *app* context and the
+*component* context. If you're looking for performance optimizations, just call
+the context hook that you need.
+
+** Sass support
+You can import =.sass= or even =.css= files straight into your components since
+the underlying webpack config handles it. As long as you're not using the
+hydrate version, Fusion can even generate a css file with only the style needed
+for the page, like it does for the js bundle.
+
+Note: Uses =node-sass= (not dart-sass that comes with additional features).
+
+** CSS-in-JS
+Fusion actually handles =styled-components=, *v4*, with SSR setup. As it is
+completely undocumented, it's unclear what the long-term support will be.
+
+Due to the lack of control on the SSR setup, it is not possible to setup other
+solutions with SSR.
+
+** Meta tags
+The meta tags that can be set from the PageBuilder Editor panel are not rendered
+as correct meta tags–they’re using the =value= attribute instead of =content=.
+
+Consider fixing it in your html output types, like this:
+#+BEGIN_SRC js
+props.metaValue.htmlTags().map(name =>
+  <meta name={name} content={props.metaValue(name)} />
+)
+#+END_SRC
