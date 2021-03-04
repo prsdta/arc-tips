@@ -100,7 +100,7 @@ accessible from the console on any page of your site).
 * Fusion features
 ** Fusion context
 =useFusionContext= just gets you an object merging the *app* context and the
-*component* context. If you're looking for performance optimizations, just call
+*component* context. If you're looking for micro-optimizations, just call
 the context hook that you need.
 
 ** Sass support
