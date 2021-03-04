@@ -49,6 +49,19 @@ The type data here will only be used to configure the input in PB, but all
 parameters will be passed to the source as *strings*, that you may need to
 parse.
 
+*** =schemaName=
+Schema shapes are currently no unforced, so you don't have to set this.
+*However* this property is useful if you want to filter the available content
+source for a ~contentConfig~ *custom field*:
+
+Example below: only sources with the =ans-feed= value will be shown in the
+PageBuilder dropdown.
+#+begin_src js
+feedConfig: PropTypes.contentConfig("ans-feed").tag({
+  label: "Story feed configuration",
+})
+#+end_src
+
 * PageBuilder Editor
 ** Interpolate data in fields
 As noted in [[id:71634bc1-af99-4d7e-b9e0-55d8c872f69c][another entry]], you can interpolate values from the global content in
