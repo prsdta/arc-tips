@@ -105,9 +105,7 @@ the context hook that you need.
 
 ** Sass support
 You can import =.sass= or even =.css= files straight into your components since
-the underlying webpack config handles it. As long as you're not using the
-hydrate version, Fusion can even generate a css file with only the style needed
-for the page, like it does for the js bundle.
+the underlying webpack config handles it.
 
 Note: Uses =node-sass= (not dart-sass that comes with additional features).
 
